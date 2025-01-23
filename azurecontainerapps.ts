@@ -88,6 +88,7 @@ export class azurecontainerapps {
     private static registryUsername: string;
     private static registryPassword: string;
     private static registryUrl: string;
+    private static azureRegistryUrl: string;
 
     // Command line arguments
     private static commandLineArgs: string[];
@@ -150,6 +151,9 @@ export class azurecontainerapps {
 
         // Get the name of the RegistryUrl to push images to, if provided
         this.registryUrl = this.toolHelper.getInput('registryUrl', false) as string;
+
+        // Get the name of the AzureRegistryUrl to push images to, if provided
+        this.azureRegistryUrl = this.toolHelper.getInput('azureRegistryUrl', false) as string;
 
         // Get the previously built image to deploy, if provided
         this.imageToDeploy = this.toolHelper.getInput('imageToDeploy', false) as string;
@@ -558,11 +562,11 @@ export class azurecontainerapps {
             (this.util.isNullOrEmpty(this.ingress) || this.ingress == 'disabled');
 
         // Pass the Container Registry credentials when creating a Container App or updating a Container App via the 'up' command
-        if (!this.util.isNullOrEmpty(this.registryUrl) && !this.util.isNullOrEmpty(this.registryUsername) && !this.util.isNullOrEmpty(this.registryPassword) &&
+        if (!this.util.isNullOrEmpty(this.azureRegistryUrl) && !this.util.isNullOrEmpty(this.registryUsername) && !this.util.isNullOrEmpty(this.registryPassword) &&
             (!this.containerAppExists || (this.containerAppExists && !this.noIngressUpdate))) {
             this.adminCredentialsProvided = true;
             this.commandLineArgs.push(
-                `--registry-server ${this.registryUrl}`,
+                `--registry-server ${this.azureRegistryUrl}`,
                 `--registry-username ${this.registryUsername}`,
                 `--registry-password ${this.registryPassword}`);
         }
@@ -647,8 +651,8 @@ export class azurecontainerapps {
 
         if (this.noIngressUpdate) {
             // Update the Container Registry details on the existing Container App, if provided as an input
-            if (!this.util.isNullOrEmpty(this.registryUrl) && !this.util.isNullOrEmpty(this.registryUsername) && !this.util.isNullOrEmpty(this.registryPassword)) {
-                await this.appHelper.updateContainerAppRegistryDetails(this.containerAppName, this.resourceGroup, this.registryUrl, this.registryUsername, this.registryPassword);
+            if (!this.util.isNullOrEmpty(this.azureRegistryUrl) && !this.util.isNullOrEmpty(this.registryUsername) && !this.util.isNullOrEmpty(this.registryPassword)) {
+                await this.appHelper.updateContainerAppRegistryDetails(this.containerAppName, this.resourceGroup, this.azureRegistryUrl, this.registryUsername, this.registryPassword);
             }
 
             // Update the Container App using the 'update' command

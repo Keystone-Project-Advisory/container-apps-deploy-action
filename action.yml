@@ -24,6 +24,9 @@ inputs:
   registryUrl:
     description: 'The base URL of the Container Registry that the runnable application image will be pushed to.'
     required: false
+  azureRegistryUrl:
+    description: 'The base URL of the Container Registry that the runnable application image will be pulled from.'
+    required: false
   registryUsername:
     description: 'The username used to authenticate push requests to the provided Container Registry using the "docker login" action.'
     required: false
